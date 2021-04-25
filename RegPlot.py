@@ -4,6 +4,7 @@
 from scipy import stats
 import pandas as pd 
 import matplotlib.pyplot as plt 
+import sys
 
 def read_data(data):
     '''
@@ -27,7 +28,7 @@ def plot_reg(df, column1, column2, output = 'output'):
     '''
     x = df[column1]
     y = df[column2]
-    print(x,y)
+    # print(x,y)
     regression = stats.linregress(x,y)
     slope = regression.slope
     intercept = regression.intercept
@@ -42,21 +43,28 @@ def plot_all(df, column1, column2, groups):
     '''
     '''
     unique_values = df[groups].unique()
-    print(unique_values)
+    # print(unique_values)
     for i in unique_values:
         print("starting new plot")
         species_df = df[df[groups] == i]
-        print(i)
-        print(species_df)
+        # print(i)
+        # print(species_df)
         print("making variable plot for", i)
         plt.clf()
         plot_variables(species_df, column1, column2, i)
         plt.clf()
         print("making regression plot for", i)
         plot_reg(species_df, column1, column2, i)
-    print(species_df)
 
          
 
 if __name__ == '__main__':
-    pass
+    if len(sys.argv) < 5:
+        print("Expecting file name + four arguments: .csv file, column1, column2, grouping column (e.g., column with species names)")
+    else:
+        data = sys.argv[1]
+        column1 = sys.argv[2]
+        column2 = sys.argv[3]
+        groups = sys.argv[4]
+        df = read_data(data)
+        plot_all(df, column1, column2, groups)
